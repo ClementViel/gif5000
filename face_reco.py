@@ -4,10 +4,12 @@ import cv2
 import numpy as np
 from numpy import linalg as LA
 import tensorflow as tf
+from facenet_pytorch import MTCNN
 
 
 def preprocess_image(image_path):
     # Load the image using OpenCV
+    print(image_path)
     img = cv2.imread(image_path)
 
     # Convert the image to RGB (FaceNet expects RGB images)
@@ -50,7 +52,6 @@ def compare_faces(embedding1, embedding2, threshold=0.15):
 
 def compare(img1, img2):
     # Load the pre-trained FaceNet model
-    # model = load_model('facenet_keras.h5')
     model = tf.keras.applications.ResNet50(weights='imagenet')
 #    model = FaceNet()
     print("Model Loaded Successfully")

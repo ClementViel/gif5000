@@ -12,6 +12,9 @@ import face_reco
 
 GALLERY = "/Users/clem/Projets/prog/gif5000/photo_tests/"
 ANCHOR = "/Users/clem/Projets/prog/gif5000/set/anchor/"
+DATASET = "/Users/clem/Projets/prog/gif5000/dataset/"
+DATASET_TRAIN = "/Users/clem/Projets/prog/gif5000/dataset/train/"
+DATASET_VAL = "/Users/clem/Projets/prog/gif5000/dataset/val/"
 
 
 def get_framed_pictures():
@@ -40,10 +43,44 @@ def take_picture():
         write_to_path(img, GALLERY)
 
 
+def take_picture_dataset():
+    for i in range(50):
+        s, img = cam.read()
+        if s:
+            write_to_path(img, DATASET_TRAIN + "anchor/")
+    for i in range(50):
+        s, img = cam.read()
+        if s:
+            write_to_path(img, DATASET_VAL + "anchor/")
+
+
 def take_picture_anchor():
+    global frame_for_picture
     s, img = cam.read()
     if s:
-        write_to_path(img, ANCHOR)
+        frame = frame_for_picture % 2
+        write_to_frame(img, frame)
+        frame_for_picture += 1
+
+
+# def write_to_frame(img, frame):
+#    if (frame == 1):
+#        img = .resize((200, 200))
+#        imgtk = ImageTk.PhotoImage(image=img)
+#        photo1_label = Label(photo1_frame, image=imgtk)
+#        photo1_label.image = imgtk
+#        photo1_label.pack()
+#    elif (frame == 2) {
+#        img = Image.open(image_file.name).resize((200, 200))
+#        imgtk = ImageTk.PhotoImage(image=img)
+#        photo1_label = Label(photo2_frame, image=imgtk)
+#        photo1_label.image = imgtk
+#        photo1_label.pack()
+#
+#    }
+
+def train_model():
+    face_reco.train(DATASET)
 
 
 def compare_picture():
@@ -90,6 +127,15 @@ def show_frames_camera():
         label_camera_frame.configure(image=imgtk)
     # Repeat after an interval to capture continiously
     view.after(20, show_frames_camera)
+
+
+def heatmap_picture():
+    heatmap_picture = Image.open(
+        "/Users/clem/Projets/prog/gif5000/heatmap.jpg")
+    imgtk = ImageTk.PhotoImage(image=heatmap_picture)
+    photo_label = Label(debug_frame, image=imgtk)
+    photo_label.image = imgtk
+    photo_label.pack()
 
 
 view = Tk()
@@ -141,7 +187,8 @@ button_change1.grid(row=1, column=0)
 button_change2 = tk.Button(
     master=buttons_frame, text="change photo 2", command=load_picture_2)
 button_change2.grid(row=2, column=0)
-button_heat = tk.Button(master=buttons_frame, text="view heatmap")
+button_heat = tk.Button(master=buttons_frame,
+                        text="view heatmap", command=heatmap_picture)
 button_heat.grid(row=3, column=0)
 button_land = tk.Button(master=buttons_frame, text="view landmark")
 button_land.grid(row=4, column=0)
@@ -151,9 +198,19 @@ button_photo.grid(row=5, column=0)
 button_anchor = tk.Button(master=buttons_frame,
                           text="photo anchor", command=take_picture_anchor)
 button_anchor.grid(row=6, column=0)
+button_dataset = tk.Button(
+    master=buttons_frame, text="dataset", command=take_picture_dataset)
+button_dataset.grid(row=7, column=0)
 
+button_dataset = tk.Button(
+    master=buttons_frame, text="train", command=train_model)
+button_dataset.grid(row=1, column=1)
+
+
+frame_for_picture = 1
 image1_path = "nope"
 image2_path = "nope"
 cam = cv2.VideoCapture(0)
+face_reco = face_reco.face_reco()
 show_frames_camera()
 view.mainloop()

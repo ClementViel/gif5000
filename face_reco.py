@@ -42,6 +42,12 @@ class face_reco:
         cv2.resize(image, (200, 200))
         cv2.imwrite(filename, image)
 
+    def save_model(self):
+        self.heatmap.save_model()
+
+    def load_model(self):
+        self.heatmap.load_model()
+
     def get_face_embedding(self, image_path):
         # Generate the embedding
         (embedding, heatmap) = self.heatmap.prediction(image_path)
@@ -66,9 +72,5 @@ class face_reco:
     def compare(self, img1, img2):
         # Get embeddings for two images
         embedding1 = self.get_face_embedding(img1)
-        embedding2 = self.get_face_embedding(img2)
 
         # Compare the two faces
-        self.distance = compare_faces(embedding1, embedding2)
-
-        print(f"Euclidean Distance: {distance}")

@@ -63,26 +63,6 @@ def take_picture_anchor():
         frame_for_picture += 1
 
 
-# def write_to_frame(img, frame):
-#    if (frame == 1):
-#        img = .resize((200, 200))
-#        imgtk = ImageTk.PhotoImage(image=img)
-#        photo1_label = Label(photo1_frame, image=imgtk)
-#        photo1_label.image = imgtk
-#        photo1_label.pack()
-#    elif (frame == 2) {
-#        img = Image.open(image_file.name).resize((200, 200))
-#        imgtk = ImageTk.PhotoImage(image=img)
-#        photo1_label = Label(photo2_frame, image=imgtk)
-#        photo1_label.image = imgtk
-#        photo1_label.pack()
-#
-#    }
-
-def train_model():
-    face_reco.train(DATASET)
-
-
 def compare_picture():
     # Define function to show frame
     global inference_text
@@ -138,30 +118,45 @@ def heatmap_picture():
     photo_label.pack()
 
 
+def train_model():
+    face_reco.train(DATASET)
+
+
+def save_model():
+    face_reco.save_model()
+
+
+def load_model():
+    face_reco.load_model()
+
+
 view = Tk()
 view.title("GIF5000")
 view.geometry("1000x1000")
 inference_text = StringVar(name="inference")
 inference_text.set("Match ?")
-camera_frame = tk.Frame(
-    view, relief=tk.RIDGE, borderwidth=1, width=500, height=500)
+camera_frame = tk.Frame(view, relief=tk.RIDGE,
+                        borderwidth=1, width=500, height=500)
+
+
 camera_frame.pack()
 label_camera_frame = tk.Label(master=camera_frame, text="COUCOU")
 camera_frame.pack_propagate(False)
 label_camera_frame.pack(fill=tk.BOTH, expand=True)
 camera_frame.grid(row=0, column=1)
-
 debug_frame = tk.Frame(master=view, relief=tk.RIDGE,
                        borderwidth=1, width=500, height=500)
 debug_frame.pack_propagate(False)
 debug_frame.grid(row=1, column=1)
-label_debug_frame = tk.Label(master=debug_frame, text="debug frame")
+label_debug_frame = tk.Label(
+    master=debug_frame, text="debug frame")
 label_debug_frame.pack()
 
 photo_frame = tk.Frame(view, relief=tk.RIDGE,
                        borderwidth=1, width=500, height=500)
 photo_frame.pack_propagate(False)
-label_photo_frame = tk.Label(master=photo_frame, text="Photos et boutons")
+label_photo_frame = tk.Label(
+    master=photo_frame, text="Photos et boutons")
 label_photo_frame.pack()
 photo_frame.grid(row=0, column=0)
 photo1_frame = tk.Frame(master=photo_frame, relief=tk.RIDGE,
@@ -172,7 +167,8 @@ photo2_frame = tk.Frame(master=photo_frame, relief=tk.RIDGE,
                         borderwidth=1, width=200, height=200)
 photo2_frame.pack_propagate(False)
 photo2_frame.grid(row=0, column=1)
-label_inference = tk.Label(master=photo_frame, textvariable=inference_text)
+label_inference = tk.Label(
+    master=photo_frame, textvariable=inference_text)
 label_inference.grid(row=1, column=1)
 
 buttons_frame = tk.Frame(master=view,
@@ -205,6 +201,12 @@ button_dataset.grid(row=7, column=0)
 button_dataset = tk.Button(
     master=buttons_frame, text="train", command=train_model)
 button_dataset.grid(row=1, column=1)
+button_dataset = tk.Button(
+    master=buttons_frame, text="save", command=save_model)
+button_dataset.grid(row=2, column=1)
+button_dataset = tk.Button(
+    master=buttons_frame, text="load", command=load_model)
+button_dataset.grid(row=3, column=1)
 
 
 frame_for_picture = 1

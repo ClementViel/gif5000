@@ -117,6 +117,15 @@ class GradCAM:
         self.model.load_dataset(path)
         self.model.train_model()
 
+    def save_model(self):
+        torch.save(self.model.state_dict(),
+                   "/Users/clem/Projets/prog/gif5000/model")
+
+    def load_model(self):
+        self.model.load_state_dict(torch.load(
+            "/Users/clem/Projets/prog/gif5000/model", weights_only=True))
+        print("model loaded")
+
     def prediction(self, img_path):
         input_image = Image.open(img_path)
         ssl._create_default_https_context = ssl._create_unverified_context
@@ -138,7 +147,7 @@ class GradCAM:
         probs = torch.softmax(logits, dim=1)
         pred_class_idx = torch.argmax(probs, dim=1).item()
         predicted_prob = probs[0, pred_class_idx].item()
-        class_labels = ["anchor"]
+        class_labels = ["anchor", "negative"]
 #        class_labels = json.loads(requests.get(IMAGENET_CLASSES_URL).text)
         struct(class_labels, examples=True)
 
@@ -149,5 +158,5 @@ class GradCAM:
         heatmap_image = self.generate_heatmap(img_path, heatmap)
         print("Predicted class is " + predicted_class_name)
         print("Precision : ")
-        print(predicted_probs)
+        print(predicted_prob)
         return (logits, heatmap_image)
